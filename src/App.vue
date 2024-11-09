@@ -20,6 +20,51 @@ import HelloWorld from './components/HelloWorld.vue'
   <RouterView />
 </template>
 
+<script setup lang="ts">
+const fetchAppVersion = async (nowCache: boolean = false) => {
+  // 使用 try/catch 捕获 fetch 错误，避免阻塞程序
+  try {
+    const url = process.env.API_ENV === 'development' ? '/version.json' : '/publicPath/version.json'
+    const result = await fetch(url)
+    const data = await result.json()
+    if (result.status === 200) {
+      // 1. 获取最新版本号
+      const newVersion = data.version
+      const cacheKey = 'cache-version'
+      // 2. 获取缓存版本号
+      const cacheVersion = localStorage.getItem(cacheKey)
+
+      // 3. !!! 首次进入立即缓存当前版本号
+      if (nowCache) {
+        localStorage.setItem(cacheKey, newVersion) // 缓存版本号
+      } else {
+        // 4. 监控到程序有新版本
+        if (newVersion !== cacheVersion) {
+          // 4.1 提示用户有发版更新
+          // ... 省略你的提醒用户交互方式
+          localStorage.setItem(cacheKey, newVersion) // 4.2 缓存版本号
+        }
+      }
+    }
+  } catch {}
+}
+
+onMounted(() => {
+  fetchAppVersion(true)
+
+  // 查询场景1: 计时器轮询查询（每隔一分钟查询一次）
+  setInterval(() => fetchAppVersion(), 60 * 1000)
+  // 查询场景2: 程序 visibility 时查询
+  const handleVisibilityChange = () => {
+    if (!document.hidden) fetchAppVersion()
+  }
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  return () => {
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }
+})
+</script>
+
 <style scoped>
 header {
   line-height: 1.5;
