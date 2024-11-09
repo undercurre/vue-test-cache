@@ -64,9 +64,9 @@ copyFileSync(versionPath, resolve(buildPath, 'version.json')) // 可以选择是
 // 4. 提交 version.json 版本记录（git）
 const commandOptions = { cwd: rootPath }
 execSyncCommand(`git restore --staged .`, commandOptions) // 撤销暂存区的文件
-execSyncCommand(`git add ${versionPath}`, commandOptions) // 添加 version.json 到暂存区
+execSyncCommand(`git add .`, commandOptions) // 添加 version.json 到暂存区
 execSyncCommand(
-  `git commit -m '${`chore: publish version ${newVersion} by ${packageJSON.name}`}'`,
+  `git commit -m "${`chore: publish version ${newVersion} by ${packageJSON.name}`}"`,
   commandOptions,
 ) // 提交 commit
 execSyncCommand(`git pull origin`, commandOptions) // 拉取远端代码
