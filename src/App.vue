@@ -32,7 +32,8 @@ const fetchAppVersion = async (nowCache: boolean = false) => {
       const cacheKey = 'cache-version'
       // 2. 获取缓存版本号
       const cacheVersion = localStorage.getItem(cacheKey)
-
+      console.log('缓存版本号', cacheVersion)
+      console.log('新版本号', newVersion)
       // 3. !!! 首次进入立即缓存当前版本号
       if (nowCache) {
         localStorage.setItem(cacheKey, newVersion) // 缓存版本号
