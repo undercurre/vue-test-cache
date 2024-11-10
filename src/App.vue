@@ -24,7 +24,7 @@ import HelloWorld from './components/HelloWorld.vue'
 const fetchAppVersion = async (nowCache: boolean = false) => {
   // 使用 try/catch 捕获 fetch 错误，避免阻塞程序
   try {
-    const url = process.env.API_ENV === 'development' ? '/version.json' : '/publicPath/version.json'
+    const url = process.env.API_ENV === 'development' ? '../public/version' : '../version'
     const result = await fetch(url)
     const data = await result.json()
     if (result.status === 200) {
